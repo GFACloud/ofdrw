@@ -60,6 +60,16 @@ public class OFDSigner implements Closeable {
     }
 
     /**
+     * @return GFA 签名提供者
+     */
+    public static Provider GFA_Provider() {
+        return new Provider()
+                .setProviderName("ESS-OFD")
+                .setCompany("GFA")
+                .setVersion(GlobalVar.Version);
+    }
+
+    /**
      * OFD虚拟容器
      */
     private OFDDir ofdDir;
@@ -499,7 +509,7 @@ public class OFDSigner implements Closeable {
         // 构造签名信息
         SignedInfo signedInfo = new SignedInfo()
                 // 设置签名模块提供者信息
-                .setProvider(OFDRW_Provider())
+                .setProvider(GFA_Provider())
                 // 设置签名方法
                 .setSignatureMethod(signContainer.getSignAlgOID())
                 // 设置签名扩展属性
