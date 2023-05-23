@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>ofdrw</artifactId>
         <groupId>org.ofdrw</groupId>
-        <version>2.0.5-gfa</version>
+        <version>2.0.5</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
+    <artifactId>ofdrw-layout</artifactId>
 
-    <artifactId>ofdrw-reader</artifactId>
-    <description>OFD 文件解析器，用于解析文件内容，为修改和签名提供基本的API访问能力。</description>
+    <name>ofdrw-layout</name>
+    <description>OFD 布局应用库</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -19,14 +26,16 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-tiff -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-tiff</artifactId>
+            <version>3.5</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.ofdrw</groupId>
@@ -34,25 +43,16 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.ofdrw</groupId>
-            <artifactId>ofdrw-core</artifactId>
+            <artifactId>ofdrw-reader</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ofdrw</groupId>
-            <artifactId>ofdrw-gm</artifactId>
+            <artifactId>ofdrw-font</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>jbig2-imageio</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-
     </dependencies>
+
+
 </project>
