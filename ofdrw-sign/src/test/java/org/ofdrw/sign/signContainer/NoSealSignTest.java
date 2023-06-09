@@ -1,5 +1,6 @@
 package org.ofdrw.sign.signContainer;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 import org.ofdrw.gm.cert.PKCS12Tools;
 import org.ofdrw.gm.ses.v1.SESeal;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
+import java.security.Security;
 import java.security.cert.Certificate;
 
 /**
@@ -25,6 +27,11 @@ import java.security.cert.Certificate;
  * @since 2020-05-18 19:48:29
  */
 public class NoSealSignTest {
+    static {
+        if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
+            Security.addProvider(new BouncyCastleProvider());
+		}
+    }
 
     @Test
     public void testSign() throws Exception{

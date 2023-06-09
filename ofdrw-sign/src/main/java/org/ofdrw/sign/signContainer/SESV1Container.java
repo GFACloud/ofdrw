@@ -47,6 +47,11 @@ public class SESV1Container implements ExtendSignatureContainer {
      */
     private final Certificate certificate;
 
+    /**
+     * 密码算法提供者
+     */
+    private final String provider;
+
 
     /**
      * V1版本的电子签章容器构造
@@ -59,6 +64,25 @@ public class SESV1Container implements ExtendSignatureContainer {
         this.privateKey = privateKey;
         this.seal = seal;
         this.certificate = signCert;
+        this.provider = BouncyCastleProvider.PROVIDER_NAME;
+    }
+
+    /**
+     * V1版本的电子签章容器构造
+     *
+     * @param privateKey 签名使用的私钥
+     * @param seal       电子印章
+     * @param signCert   签章用户证书
+     * @param provider   密码算法提供者
+     */
+    public SESV1Container(PrivateKey privateKey, SESeal seal, Certificate signCert, String provider) {
+        this.privateKey = privateKey;
+        this.seal = seal;
+        this.certificate = signCert;
+        if(null == provider || provider.isEmpty()) {
+            provider = BouncyCastleProvider.PROVIDER_NAME;
+        }
+        this.provider = provider;
     }
 
     /**
@@ -115,7 +139,7 @@ public class SESV1Container implements ExtendSignatureContainer {
                 .setPropertyInfo(new DERIA5String(propertyInfo))
                 .setCert(new DEROctetString(certificate.getEncoded()))
                 .setSignatureAlgorithm(GMObjectIdentifiers.sm2sign_with_sm3);
-        Signature signature = Signature.getInstance("SM3withSm2", new BouncyCastleProvider());
+        Signature signature = Signature.getInstance("SM3withSm2", provider);
         signature.initSign(privateKey);
         signature.update(tbsSign.getEncoded("DER"));
         byte[] sign = signature.sign();

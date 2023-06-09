@@ -56,6 +56,11 @@ public class SESV4Container implements ExtendSignatureContainer {
     private TimeStampHook timeStampHook;
 
     /**
+     * 密码算法提供者
+     */
+    private final String provider;
+
+    /**
      * V1版本的电子签章容器构造
      *
      * @param privateKey 签名使用的私钥
@@ -66,6 +71,25 @@ public class SESV4Container implements ExtendSignatureContainer {
         this.privateKey = privateKey;
         this.seal = seal;
         this.certificate = signCert;
+        this.provider = BouncyCastleProvider.PROVIDER_NAME;
+    }
+
+    /**
+     * V1版本的电子签章容器构造
+     *
+     * @param privateKey 签名使用的私钥
+     * @param seal       电子印章
+     * @param signCert   签章用户证书
+     * @param provider   密码算法提供者
+     */
+    public SESV4Container(PrivateKey privateKey, SESeal seal, Certificate signCert, String provider) {
+        this.privateKey = privateKey;
+        this.seal = seal;
+        this.certificate = signCert;
+        if(null == provider || provider.isEmpty()) {
+            provider = BouncyCastleProvider.PROVIDER_NAME;
+        }
+        this.provider = provider;
     }
 
     /**
@@ -81,6 +105,26 @@ public class SESV4Container implements ExtendSignatureContainer {
         this.seal = seal;
         this.certificate = signCert;
         this.timeStampHook = timeStampHook;
+        this.provider = BouncyCastleProvider.PROVIDER_NAME;
+    }
+
+    /**
+     * V1版本的电子签章容器构造
+     *
+     * @param privateKey    签名使用的私钥
+     * @param seal          电子印章
+     * @param signCert      签章用户证书
+     * @param timeStampHook 时间戳Hook
+     */
+    public SESV4Container(PrivateKey privateKey, SESeal seal, Certificate signCert, TimeStampHook timeStampHook, String provider) {
+        this.privateKey = privateKey;
+        this.seal = seal;
+        this.certificate = signCert;
+        this.timeStampHook = timeStampHook;
+        if(null == provider || provider.isEmpty()) {
+            provider = BouncyCastleProvider.PROVIDER_NAME;
+        }
+        this.provider = provider;
     }
 
     /**
@@ -140,7 +184,7 @@ public class SESV4Container implements ExtendSignatureContainer {
                 .setDataHash(dataHash)
                 .setPropertyInfo(propertyInfo);
 
-        Signature sg = Signature.getInstance("SM3WithSM2", new BouncyCastleProvider());
+        Signature sg = Signature.getInstance("SM3WithSM2", provider);
         sg.initSign(privateKey);
         sg.update(toSign.getEncoded("DER"));
         final byte[] sigVal = sg.sign();
