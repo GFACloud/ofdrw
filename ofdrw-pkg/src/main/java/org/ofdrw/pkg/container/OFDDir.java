@@ -283,8 +283,11 @@ public class OFDDir extends VirtualContainer {
         //打包
         ZipOutputStream zip = new ZipOutputStream(outStream);
         FileTime fileTime = FileTime.fromMillis(System.currentTimeMillis());
-        zip(getSysAbsPath(), "", fileTime, zip);
-        zip.finish();
+        try {
+            zip(getSysAbsPath(), "", fileTime, zip);
+        } finally {
+            zip.finish();
+        }
         outStream.flush();
     }
 
@@ -379,16 +382,17 @@ public class OFDDir extends VirtualContainer {
      * @throws IOException IO异常
      */
     private void zip(String workDirPath, String fullOfFilePath) throws IOException {
-        ZipFile ofdFile = new ZipFile(fullOfFilePath);
-        final File[] files = new File(workDirPath).listFiles();
-        if (files == null) {
-            throw new RuntimeException("目录中没有任何文件无法打包");
-        }
-        for (File f : files) {
-            if (f.isDirectory()) {
-                ofdFile.addFolder(f);
-            } else {
-                ofdFile.addFile(f);
+        try (ZipFile ofdFile = new ZipFile(fullOfFilePath)) {
+            final File[] files = new File(workDirPath).listFiles();
+            if (files == null) {
+                throw new RuntimeException("目录中没有任何文件无法打包");
+            }
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    ofdFile.addFolder(f);
+                } else {
+                    ofdFile.addFile(f);
+                }
             }
         }
     }

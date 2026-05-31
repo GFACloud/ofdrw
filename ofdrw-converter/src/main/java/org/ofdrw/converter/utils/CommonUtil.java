@@ -164,14 +164,16 @@ public class CommonUtil {
 
     public static byte[] converJbig2(File imgFile) throws IOException {
         JBIG2ImageReader imageReader = new JBIG2ImageReader(new JBIG2ImageReaderSpi());
-        InputStream inputStream = new FileInputStream(imgFile);
-        DefaultInputStreamFactory disf = new DefaultInputStreamFactory();
-        ImageInputStream imageInputStream = disf.getInputStream(inputStream);
-        imageReader.setInput(imageInputStream);
-        BufferedImage bufferedImage = imageReader.read(0, imageReader.getDefaultReadParam());
-        ByteArrayOutputStream bosImage = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "PNG", bosImage);
-        return bosImage.toByteArray();
+        try (InputStream inputStream = new FileInputStream(imgFile)) {
+            DefaultInputStreamFactory disf = new DefaultInputStreamFactory();
+            try (ImageInputStream imageInputStream = disf.getInputStream(inputStream)) {
+                imageReader.setInput(imageInputStream);
+                BufferedImage bufferedImage = imageReader.read(0, imageReader.getDefaultReadParam());
+                ByteArrayOutputStream bosImage = new ByteArrayOutputStream();
+                ImageIO.write(bufferedImage, "PNG", bosImage);
+                return bosImage.toByteArray();
+            }
+        }
     }
 
 
