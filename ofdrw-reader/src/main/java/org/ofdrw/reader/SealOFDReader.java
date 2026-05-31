@@ -16,7 +16,6 @@ import org.ofdrw.reader.model.OfdPageVo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,11 +34,16 @@ public class SealOFDReader extends OFDReader {
     private Document document;
 
     public SealOFDReader(Path ofdFile) throws IOException {
-        this(Files.newInputStream(ofdFile));
+        super(ofdFile);
+        initDocContext();
     }
 
     public SealOFDReader(InputStream inputStream) throws IOException {
         super(inputStream);
+        initDocContext();
+    }
+
+    private void initDocContext() {
         try {
             this.getResourceLocator().save();
             DocBody docBody = this.getOFDDir().getOfd().getDocBody();

@@ -61,40 +61,41 @@ public class ZipUtil {
         int countByteNumber = 0;
 
         // 解决zip文件中有中文目录或者中文文件
-        ZipInputStream zip = new ZipInputStream(src, Charset.forName("GBK"));
-        ZipEntry entry;
-        while ((entry = zip.getNextEntry()) != null) {
-            String name = entry.getName();
+        try (ZipInputStream zip = new ZipInputStream(src, Charset.forName("GBK"))) {
+            ZipEntry entry;
+            while ((entry = zip.getNextEntry()) != null) {
+                String name = entry.getName();
 
-            File file = new File(pathFile, name).getCanonicalFile();
+                File file = new File(pathFile, name).getCanonicalFile();
 
-            //校验路径合法性
-            pathValid(pathFile.getAbsolutePath(), file.getAbsolutePath());
+                //校验路径合法性
+                pathValid(pathFile.getAbsolutePath(), file.getAbsolutePath());
 
-            if (entry.isDirectory()) {
-                file.mkdirs();
-            } else {
-                File dir = file.getParentFile();
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-
-                byte[] buf = new byte[1024];
-                int num;
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                while ((num = zip.read(buf, 0, buf.length)) != -1) {
-
-                    //写入字节数超出限制则抛出异常
-                    if (countByteNumber + num > MaxSize) {
-                        throw new IOException(String.format("写入数据超出ZIP解压最大字节数(%s)限制！", MaxSize));
+                if (entry.isDirectory()) {
+                    file.mkdirs();
+                } else {
+                    File dir = file.getParentFile();
+                    if (!dir.exists()) {
+                        dir.mkdirs();
                     }
 
-                    bos.write(buf, 0, num);
 
-                    countByteNumber += num;
+                    byte[] buf = new byte[1024];
+                    int num;
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    while ((num = zip.read(buf, 0, buf.length)) != -1) {
+
+                        //写入字节数超出限制则抛出异常
+                        if (countByteNumber + num > MaxSize) {
+                            throw new IOException(String.format("写入数据超出ZIP解压最大字节数(%s)限制！", MaxSize));
+                        }
+
+                        bos.write(buf, 0, num);
+
+                        countByteNumber += num;
+                    }
+                    Files.write(Paths.get(file.getAbsolutePath()), bos.toByteArray());
                 }
-                Files.write(Paths.get(file.getAbsolutePath()), bos.toByteArray());
             }
         }
     }
